@@ -5,10 +5,16 @@
     <Version>1.0.0</Version>
     <AssemblyVersion>1.0.0</AssemblyVersion>
     <FileVersion>1.0.0</FileVersion>
+
+    <Title>CliTree</Title>
     <Authors>Lukáš Lánský</Authors>
     <Product>CliTree</Product>
     <Description>A .NET library for tree pretty-printing.</Description>
     <Copyright>Apache License 2.0</Copyright>
+    <PackageLicenseUrl>https://github.com/lukas-lansky/CliTree/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/lukas-lansky/CliTree</PackageProjectUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <IncludeSource>true</IncludeSource>
   </PropertyGroup>
 
   <ItemGroup>
