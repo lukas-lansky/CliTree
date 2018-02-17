@@ -22,42 +22,11 @@ namespace Lansky.CliTree
 
             while (stack.Count > 0)
             {
-                (var t, var d, var last) = stack.Pop();
+                (var t, var currentDepth, var last) = stack.Pop();
 
-                var line = new StringBuilder();
-                for (var i = 0; i < d; i++)
-                {
-                    if (i != d - 1)
-                    {
-                        if (!last[i])
-                        {
-                            line.Append('│');
-                        }
-                        else
-                        {
-                            line.Append(' ');
-                        }
-                    }
-                    else
-                    {
-                        if (!last[i])
-                        {
-                            line.Append('├');
-                        }
-                        else
-                        {
-                            line.Append('└');
-                        }
-                    }
-
-                    if (i == d - 1)
-                    {
-                        line.Append("─");
-                    }
-
-                    line.Append(' ');
-                }
-                line.Append(t.RootValue);
+                var line = config.ShowLines
+                    ? GetLineWithLines(currentDepth, last, t.RootValue)
+                    : GetLineWithoutLines(currentDepth, t.RootValue);
                 console.WriteLine(line.ToString());
 
                 var st = t.SubTrees.ToList();
@@ -65,9 +34,55 @@ namespace Lansky.CliTree
                 {
                     var newLast = new List<bool>(last); // TODO, this is quite wasteful
                     newLast.Add(i == st.Count - 1);
-                    stack.Push((st[i], d + 1, newLast));
+                    stack.Push((st[i], currentDepth + 1, newLast));
                 }
             }
+        }
+        
+        private static string GetLineWithLines(int currentDepth, List<bool> last, string caption)
+        {
+            var line = new StringBuilder();
+
+            for (var i = 0; i < currentDepth; i++)
+            {
+                if (i != currentDepth - 1)
+                {
+                    if (!last[i])
+                    {
+                        line.Append('│');
+                    }
+                    else
+                    {
+                        line.Append(' ');
+                    }
+                }
+                else
+                {
+                    if (!last[i])
+                    {
+                        line.Append('├');
+                    }
+                    else
+                    {
+                        line.Append('└');
+                    }
+                }
+
+                if (i == currentDepth - 1)
+                {
+                    line.Append("─");
+                }
+
+                line.Append(' ');
+            }
+            line.Append(caption);
+
+            return line.ToString();
+        }
+
+        private static string GetLineWithoutLines(int currentDepth, string caption)
+        {
+            return new string(' ', currentDepth * 2) + caption;
         }
     }
 }
