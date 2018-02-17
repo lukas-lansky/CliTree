@@ -127,5 +127,24 @@ namespace Lansky.CliTree.Test
             Assert.AreEqual("    grandchild 2", console.GetOutputLines()[5]);
             Assert.AreEqual("  child 2", console.GetOutputLines()[6]);
         }
+
+        [TestMethod]
+        public void MaxDepthConfigIsRespected()
+        {
+            var console = new StringBuilderConsole();
+            CliTree.Print(
+                new AdHocTree("root",
+                    new AdHocTree("child",
+                        new AdHocTree("grandchild 1"),
+                        new AdHocTree("grandchild 2",
+                            new AdHocTree("grandgrandchild")))),
+                console,
+                new DisplayConfiguration { MaxDepth = 1 });
+
+            Assert.AreEqual(3, console.GetOutputLines().Count);
+            Assert.AreEqual("root", console.GetOutputLines()[0]);
+            Assert.AreEqual("└─ child", console.GetOutputLines()[1]);
+            Assert.AreEqual("  └─ (...)", console.GetOutputLines()[2]);
+        }
     }
 }

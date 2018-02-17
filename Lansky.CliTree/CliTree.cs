@@ -8,9 +8,9 @@ namespace Lansky.CliTree
 {
     public static class CliTree
     {
-        public static void Print(ITree tree)
+        public static void Print(ITree tree, DisplayConfiguration config = null)
         {
-            Print(tree, new InMemoryConsole());
+            Print(tree, new InMemoryConsole(), config);
         }
 
         public static void Print(ITree tree, IConsole console, DisplayConfiguration config = null)
@@ -29,12 +29,21 @@ namespace Lansky.CliTree
                     : GetLineWithoutLines(currentDepth, t.RootValue);
                 console.WriteLine(line.ToString());
 
-                var st = t.SubTrees.ToList();
-                for (var i = st.Count - 1; i >= 0; i--)
+                if (config.MaxDepth > currentDepth)
                 {
-                    var newLast = new List<bool>(last); // TODO, this is quite wasteful
-                    newLast.Add(i == st.Count - 1);
-                    stack.Push((st[i], currentDepth + 1, newLast));
+                    var st = t.SubTrees.ToList();
+                    for (var i = st.Count - 1; i >= 0; i--)
+                    {
+                        var newLast = new List<bool>(last); // TODO, this is quite wasteful
+                        newLast.Add(i == st.Count - 1);
+                        stack.Push((st[i], currentDepth + 1, newLast));
+                    }
+                }
+                else if (t.SubTrees.Any())
+                {
+                    var newLast = new List<bool>(last);
+                    newLast.Add(true);
+                    stack.Push((new AdHocTree("(...)"), currentDepth + 1, newLast));
                 }
             }
         }
